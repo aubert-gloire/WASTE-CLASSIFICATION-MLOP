@@ -79,8 +79,10 @@ AUGMENTATION_CONFIG = {
 MIN_SAMPLES_FOR_RETRAINING = 20
 RETRAIN_ACCURACY_THRESHOLD = 0.85
 
-# Retraining Mode
-RETRAINING_MODE = "demo"  # "demo" = fast 2min (uses subset), "full" = 30min (uses all data)
+# Retraining Mode - Optimized for quick improvement
+RETRAINING_MODE = "fast"  # "fast" = quick fine-tuning
+RETRAIN_EPOCHS = 5  # Balanced epochs for model improvement
+RETRAIN_BATCH_SIZE = 32  # Standard batch size
 DEMO_SAMPLES_PER_CLASS = 100  # Images per class in demo mode (600 total for 6 classes)
 
 print("Configuration loaded")

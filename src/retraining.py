@@ -183,7 +183,7 @@ class ModelRetrainer:
     def retrain_model(self, 
                      train_dir: str, 
                      val_dir: str,
-                     epochs: int = 5,  # Reduced epochs for quick retraining
+                     epochs: int = 5,  # Balanced epochs for improvement
                      use_transfer_learning: bool = True) -> Tuple[keras.Model, Dict]:
         """
         Retrain the model with new data
@@ -191,14 +191,14 @@ class ModelRetrainer:
         Args:
             train_dir: Training data directory (already merged with uploaded data)
             val_dir: Validation data directory
-            epochs: Number of training epochs (default: 5 for quick retraining)
+            epochs: Number of training epochs (default: 5 for balanced fine-tuning)
             use_transfer_learning: Whether to use existing model weights
         
         Returns:
             Tuple of (retrained_model, history)
         """
         print("\n" + "="*60)
-        print("STARTING MODEL RETRAINING")
+        print("STARTING MODEL FINE-TUNING (5 EPOCHS)")
         print("="*60)
         
         # Create data generators
@@ -305,8 +305,8 @@ class ModelRetrainer:
             merged_count = self.merge_uploaded_data(train_dir)
             
             # Demo mode: Use only a subset for fast training
-            if RETRAINING_MODE == "demo":
-                print(f"\n🚀 DEMO MODE: Creating balanced subset for fast retraining...")
+            if RETRAINING_MODE == "demo" or RETRAINING_MODE == "fast":
+                print(f"\n🚀 FAST MODE: Creating optimized subset for quick fine-tuning...")
                 demo_dir = self.data_dir / "demo_retrain"
                 demo_train = demo_dir / "train"
                 demo_val = demo_dir / "val"
@@ -348,12 +348,12 @@ class ModelRetrainer:
                     
                     print(f"  ✓ {class_name}: {len(train_samples)} train, {len(val_samples)} val")
                 
-                print(f"\n✓ Demo subset created: ~{DEMO_SAMPLES_PER_CLASS * 6} total images")
+                print(f"\n✓ Optimized subset created: ~{DEMO_SAMPLES_PER_CLASS * 6} total images")
                 
                 # Use demo directories for training
                 train_dir_final = str(demo_train)
                 val_dir_final = str(demo_val)
-                epochs_final = 3  # Even fewer epochs for demo
+                epochs_final = 5  # Balanced fine-tuning
                 
             else:
                 # Production mode: Use full dataset
@@ -362,7 +362,7 @@ class ModelRetrainer:
                 epochs_final = 5
             
             # Retrain model
-            print(f"\nRetraining on {'demo subset' if RETRAINING_MODE == 'demo' else 'full dataset'} ({merged_count} new images added)")
+            print(f"\nFine-tuning on {'optimized subset' if RETRAINING_MODE in ['demo', 'fast'] else 'full dataset'} ({merged_count} new images added)")
             model, history = self.retrain_model(
                 train_dir_final,
                 val_dir_final,
