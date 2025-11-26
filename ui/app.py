@@ -503,7 +503,17 @@ def trigger_retraining():
     """Trigger model retraining"""
     try:
         response = requests.post(f"{API_URL}/retrain")
+        response.raise_for_status()  # Raise exception for bad status codes
+        
+        # Check if response has content
+        if not response.text:
+            return {"error": "Empty response from API"}
+        
         return response.json()
+    except requests.exceptions.JSONDecodeError as e:
+        return {"error": f"Invalid JSON response: {str(e)}. Response text: {response.text[:200]}"}
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Request failed: {str(e)}"}
     except Exception as e:
         return {"error": str(e)}
 
