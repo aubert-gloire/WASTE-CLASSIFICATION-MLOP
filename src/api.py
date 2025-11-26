@@ -314,9 +314,19 @@ async def retrain_model(
     
     # Check if directories exist
     if not Path(train_dir).exists() or not Path(val_dir).exists():
+        # Check if running on Render (production)
+        if os.getenv("RENDER"):
+            return JSONResponse(
+                status_code=503,
+                content={
+                    "message": "Retraining not available in production environment",
+                    "reason": "Training dataset not deployed to reduce deployment size",
+                    "solution": "Retraining available when running locally with full dataset"
+                }
+            )
         raise HTTPException(
             status_code=400,
-            detail="Training or validation directory not found"
+            detail="Training or validation directory not found. Please run the notebook first to organize the dataset."
         )
     
     # Start retraining in background

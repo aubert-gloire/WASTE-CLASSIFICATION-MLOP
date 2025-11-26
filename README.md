@@ -34,9 +34,11 @@ Automated waste classification system using MobileNetV2 to classify waste into 6
 - Single image prediction with confidence scores
 - 3+ interactive data visualizations
 - Bulk image upload for retraining
-- One-click model retraining (demo: 2 min, full: 30-60 min)
+- One-click model retraining (demo: 2 min, full: 30-60 min) **(Local only)**
 - Real-time system monitoring
 - Load testing with Locust
+
+**Note:** Model retraining is available when running locally with the full dataset. The deployed version uses a pre-trained model to keep deployment size manageable.
 
 ---
 
