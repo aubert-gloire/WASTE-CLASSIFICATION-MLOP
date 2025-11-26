@@ -1,0 +1,32 @@
+services:
+  # API Service
+  - type: web
+    name: waste-classification-api
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      - key: MODEL_PATH
+        value: models/waste_classifier_mobilenetv2_v1.h5
+      - key: DATA_DIR
+        value: data
+    autoDeploy: true
+    
+  # UI Service
+  - type: web
+    name: waste-classification-ui
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run ui/app.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.6
+      - key: API_URL
+        value: https://waste-classification-api.onrender.com
+    autoDeploy: true
