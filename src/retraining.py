@@ -198,8 +198,13 @@ class ModelRetrainer:
             Tuple of (retrained_model, history)
         """
         print("\n" + "="*60)
-        print("STARTING MODEL FINE-TUNING (5 EPOCHS)")
+        print("STARTING MODEL FINE-TUNING (3 EPOCHS - MEMORY OPTIMIZED)")
         print("="*60)
+        
+        # Clear memory before training
+        import gc
+        gc.collect()
+        tf.keras.backend.clear_session()
         
         # Create data generators
         train_gen, val_gen = create_data_generators(train_dir, val_dir)
@@ -306,7 +311,7 @@ class ModelRetrainer:
             
             # Demo mode: Use only a subset for fast training
             if RETRAINING_MODE == "demo" or RETRAINING_MODE == "fast":
-                print(f"\n🚀 FAST MODE: Creating optimized subset for quick fine-tuning...")
+                print(f"\n🚀 FAST MODE: Creating memory-optimized subset ({DEMO_SAMPLES_PER_CLASS} per class)...")
                 demo_dir = self.data_dir / "demo_retrain"
                 demo_train = demo_dir / "train"
                 demo_val = demo_dir / "val"
@@ -318,7 +323,7 @@ class ModelRetrainer:
                 demo_train.mkdir(parents=True, exist_ok=True)
                 demo_val.mkdir(parents=True, exist_ok=True)
                 
-                # Create balanced subset (100 images per class)
+                # Create balanced subset (30 images per class for 512MB RAM)
                 import random
                 for class_name in CLASS_NAMES:
                     train_class_dir = Path(train_dir) / class_name
@@ -348,18 +353,19 @@ class ModelRetrainer:
                     
                     print(f"  ✓ {class_name}: {len(train_samples)} train, {len(val_samples)} val")
                 
-                print(f"\n✓ Optimized subset created: ~{DEMO_SAMPLES_PER_CLASS * 6} total images")
+                print(f"\n✓ Memory-optimized subset created: ~{DEMO_SAMPLES_PER_CLASS * 6} total images")
+                print(f"  (Optimized for 512MB RAM limit on Render free tier)")
                 
                 # Use demo directories for training
                 train_dir_final = str(demo_train)
                 val_dir_final = str(demo_val)
-                epochs_final = 5  # Balanced fine-tuning
+                epochs_final = 3  # Memory-optimized training
                 
             else:
                 # Production mode: Use full dataset
                 train_dir_final = train_dir
                 val_dir_final = val_dir
-                epochs_final = 5
+                epochs_final = 3
             
             # Retrain model
             print(f"\nFine-tuning on {'optimized subset' if RETRAINING_MODE in ['demo', 'fast'] else 'full dataset'} ({merged_count} new images added)")

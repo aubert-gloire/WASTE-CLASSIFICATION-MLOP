@@ -19,7 +19,7 @@ IMAGE_SIZE = int(os.getenv("IMAGE_SIZE", "224"))
 CLASS_NAMES = ['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
 
 # Training Configuration
-BATCH_SIZE = int(os.getenv("BATCH_SIZE", "32"))
+BATCH_SIZE = int(os.getenv("BATCH_SIZE", "8"))  # Reduced for 512MB RAM limit
 EPOCHS = int(os.getenv("EPOCHS", "10"))
 LEARNING_RATE = float(os.getenv("LEARNING_RATE", "0.001"))
 VALIDATION_SPLIT = 0.2
@@ -79,11 +79,11 @@ AUGMENTATION_CONFIG = {
 MIN_SAMPLES_FOR_RETRAINING = 20
 RETRAIN_ACCURACY_THRESHOLD = 0.85
 
-# Retraining Mode - Optimized for quick improvement
+# Retraining Mode - Optimized for 512MB RAM on Render
 RETRAINING_MODE = "fast"  # "fast" = quick fine-tuning
-RETRAIN_EPOCHS = 5  # Balanced epochs for model improvement
-RETRAIN_BATCH_SIZE = 32  # Standard batch size
-DEMO_SAMPLES_PER_CLASS = 100  # Images per class in demo mode (600 total for 6 classes)
+RETRAIN_EPOCHS = 3  # Reduced for memory efficiency
+RETRAIN_BATCH_SIZE = 8  # Reduced for 512MB RAM limit
+DEMO_SAMPLES_PER_CLASS = 30  # Images per class (180 total for 6 classes - memory optimized)
 
 print("Configuration loaded")
 print(f"  - Model: {MODEL_NAME}")
