@@ -398,7 +398,28 @@ def get_metrics():
 def predict_image(image_file):
     """Send image to API for prediction"""
     try:
-        files = {"file": image_file}
+        # Ensure we send a proper file-tuple to requests
+        try:
+            # If Streamlit's UploadedFile-like object, read bytes
+            image_file.seek(0)
+            content = image_file.read()
+            filename = getattr(image_file, 'name', 'upload.jpg')
+            content_type = getattr(image_file, 'type', 'image/jpeg')
+        except Exception:
+            # If a raw bytes/BytesIO was passed
+            if isinstance(image_file, (bytes, bytearray)):
+                content = bytes(image_file)
+                filename = 'upload.jpg'
+                content_type = 'image/jpeg'
+            else:
+                content = None
+                filename = 'upload.jpg'
+                content_type = 'image/jpeg'
+
+        if content is None:
+            return {"error": "Could not read uploaded image"}
+
+        files = {"file": (filename, io.BytesIO(content), content_type)}
         response = requests.post(f"{API_URL}/predict", files=files)
         
         if response.status_code == 200:
@@ -589,19 +610,34 @@ def show_prediction_page():
     if uploaded_file is not None:
         # Display image
         col1, col2 = st.columns([1, 1])
-        
+
+        # Read bytes once and reuse
+        try:
+            uploaded_file.seek(0)
+        except Exception:
+            pass
+
+        file_bytes = uploaded_file.read()
+
         with col1:
             st.subheader("Uploaded Image")
-            image = Image.open(uploaded_file)
-            st.image(image, use_container_width=True)
-        
+            try:
+                image = Image.open(io.BytesIO(file_bytes)).convert('RGB')
+                st.image(image, use_container_width=True)
+            except Exception as e:
+                st.error(f"Failed to open image for display: {e}")
+                # Fallback: streamlit can accept raw bytes too
+                try:
+                    st.image(file_bytes, use_container_width=True)
+                except Exception as e2:
+                    st.error(f"Fallback display also failed: {e2}")
+
         with col2:
             st.subheader("Prediction Result")
-            
+
             with st.spinner("Classifying..."):
-                # Reset file pointer
-                uploaded_file.seek(0)
-                result = predict_image(uploaded_file)
+                # Send the read bytes to the prediction endpoint
+                result = predict_image(io.BytesIO(file_bytes) if not isinstance(file_bytes, (bytes, bytearray)) else file_bytes)
             
             if "error" in result:
                 st.error(f"Error: {result['error']}")

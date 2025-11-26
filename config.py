@@ -34,8 +34,16 @@ LOG_DIR = Path(os.getenv("LOG_DIR", PROJECT_ROOT / "logs"))
 for directory in [DATA_DIR, MODEL_DIR, UPLOAD_DIR, LOG_DIR]:
     directory.mkdir(parents=True, exist_ok=True)
 
-# Model Paths
-MODEL_PATH = MODEL_DIR / f"{MODEL_NAME}_{MODEL_VERSION}.h5"
+# Model Paths - Allow override from environment
+if os.getenv("MODEL_PATH"):
+    # Use absolute path from environment variable
+    MODEL_PATH = Path(os.getenv("MODEL_PATH"))
+    if not MODEL_PATH.is_absolute():
+        # If relative path, resolve from PROJECT_ROOT
+        MODEL_PATH = PROJECT_ROOT / os.getenv("MODEL_PATH")
+else:
+    MODEL_PATH = MODEL_DIR / f"{MODEL_NAME}_{MODEL_VERSION}.h5"
+
 MODEL_HISTORY_PATH = MODEL_DIR / f"{MODEL_NAME}_{MODEL_VERSION}_history.pkl"
 
 # API Configuration
