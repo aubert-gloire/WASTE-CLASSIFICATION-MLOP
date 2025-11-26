@@ -71,6 +71,26 @@ def display_image(img, caption=None):
         st.image(img, caption=caption)
     else:
         st.image(img)
+
+
+def display_plotly(fig):
+    """Display a Plotly figure with compatibility across Streamlit versions.
+
+    Tries `use_container_width=True`, falls back to a simple `st.plotly_chart(fig)`.
+    """
+    try:
+        st.plotly_chart(fig, use_container_width=True)
+        return
+    except TypeError:
+        pass
+
+    try:
+        # Some Streamlit versions accept `use_container_width` but as a keyword
+        st.plotly_chart(fig)
+        return
+    except Exception:
+        # Final fallback: attempt without extra args
+        st.plotly_chart(fig)
 def get_dataset_statistics():
     """Get real dataset statistics"""
     stats = {'class_counts': {}, 'total_train': 0, 'total_val': 0, 'total_images': 0}
@@ -726,7 +746,7 @@ def show_prediction_page():
                     color_continuous_scale='Greens'
                 )
                 fig.update_layout(height=400)
-                st.plotly_chart(fig, use_container_width=True)
+                display_plotly(fig)
                 
                 # Recycling tip
                 st.info(f"**Recycling Tip for {result['predicted_class'].capitalize()}:**\n\n" + 
@@ -769,18 +789,18 @@ def show_visualization_page():
             'Count': list(class_counts.values())
         })
         
-        fig = px.bar(
-            df,
-            x='Class',
-            y='Count',
-            title='Waste Type Distribution in Training Dataset',
-            color='Count',
-            color_continuous_scale='Viridis',
-            text='Count'
-        )
-        fig.update_traces(textposition='outside')
-        fig.update_layout(height=500)
-        st.plotly_chart(fig, use_container_width=True)
+                fig = px.bar(
+                    df,
+                    x='Class',
+                    y='Count',
+                    title='Waste Type Distribution in Training Dataset',
+                    color='Count',
+                    color_continuous_scale='Viridis',
+                    text='Count'
+                )
+                fig.update_traces(textposition='outside')
+                fig.update_layout(height=500)
+            display_plotly(fig)
         
         # Additional statistics
         col1, col2, col3 = st.columns(3)
@@ -867,7 +887,7 @@ def show_visualization_page():
             yaxis_title='Score',
             xaxis_title='Waste Category'
         )
-        st.plotly_chart(fig, use_container_width=True)
+        display_plotly(fig)
         
         st.info("These metrics are calculated from model evaluation on the validation set.")
     
@@ -922,7 +942,7 @@ def show_visualization_page():
                     text='Uploaded'
                 )
                 fig.update_traces(textposition='outside')
-                st.plotly_chart(fig, use_container_width=True)
+                display_plotly(fig)
             
             # Retraining readiness
             col1, col2 = st.columns(2)
