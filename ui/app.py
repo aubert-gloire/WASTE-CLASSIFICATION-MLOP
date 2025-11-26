@@ -42,6 +42,35 @@ except Exception as e:
 import pickle
 import json
 
+# Compatibility helper for st.image across Streamlit versions
+def display_image(img, caption=None):
+    """Display an image using the available Streamlit parameter.
+
+    Tries `use_container_width`, falls back to `use_column_width`, then no width arg.
+    """
+    try:
+        if caption is not None:
+            st.image(img, caption=caption, use_container_width=True)
+        else:
+            st.image(img, use_container_width=True)
+        return
+    except TypeError:
+        pass
+
+    try:
+        if caption is not None:
+            st.image(img, caption=caption, use_column_width=True)
+        else:
+            st.image(img, use_column_width=True)
+        return
+    except TypeError:
+        pass
+
+    # Final fallback
+    if caption is not None:
+        st.image(img, caption=caption)
+    else:
+        st.image(img)
 def get_dataset_statistics():
     """Get real dataset statistics"""
     stats = {'class_counts': {}, 'total_train': 0, 'total_val': 0, 'total_images': 0}
@@ -623,12 +652,12 @@ def show_prediction_page():
             st.subheader("Uploaded Image")
             try:
                 image = Image.open(io.BytesIO(file_bytes)).convert('RGB')
-                st.image(image, use_container_width=True)
+                display_image(image)
             except Exception as e:
                 st.error(f"Failed to open image for display: {e}")
                 # Fallback: streamlit can accept raw bytes too
                 try:
-                    st.image(file_bytes, use_container_width=True)
+                    display_image(file_bytes)
                 except Exception as e2:
                     st.error(f"Fallback display also failed: {e2}")
 
@@ -973,7 +1002,7 @@ def show_upload_page():
             for idx, file in enumerate(uploaded_files[:10]):  # Show first 10
                 with cols[idx % 5]:
                     image = Image.open(file)
-                    st.image(image, caption=file.name, use_container_width=True)
+                    display_image(image, caption=file.name)
             
             if len(uploaded_files) > 10:
                 st.info(f"...and {len(uploaded_files) - 10} more images")
