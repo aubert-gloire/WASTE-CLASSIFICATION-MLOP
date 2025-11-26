@@ -9,9 +9,9 @@ Automated waste classification system using MobileNetV2 to classify waste into 6
 ## Live Demo
 
 - **Video:** [YouTube Demo](YOUR_YOUTUBE_LINK)
-- **API:** https://waste-classification-api.onrender.com
+- **API:** https://waste-classification-api-atei.onrender.com
 - **UI:** https://waste-classification-ui.onrender.com
-- **GitHub:** [Repository](YOUR_GITHUB_LINK)
+- **GitHub:** [Repository](https://github.com/aubert-gloire/WASTE-CLASSIFICATION-MLOP)
 
 ---
 
@@ -69,8 +69,8 @@ Automated waste classification system using MobileNetV2 to classify waste into 6
 
 ```bash
 # Clone and install
-git clone YOUR_REPO_URL
-cd waste-classification-ml-pipeline
+git clone https://github.com/aubert-gloire/WASTE-CLASSIFICATION-MLOP.git
+cd WASTE-CLASSIFICATION-MLOP
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
