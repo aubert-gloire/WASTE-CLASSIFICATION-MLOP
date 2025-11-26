@@ -789,18 +789,18 @@ def show_visualization_page():
             'Count': list(class_counts.values())
         })
         
-                fig = px.bar(
-                    df,
-                    x='Class',
-                    y='Count',
-                    title='Waste Type Distribution in Training Dataset',
-                    color='Count',
-                    color_continuous_scale='Viridis',
-                    text='Count'
-                )
-                fig.update_traces(textposition='outside')
-                fig.update_layout(height=500)
-            display_plotly(fig)
+        fig = px.bar(
+            df,
+            x='Class',
+            y='Count',
+            title='Waste Type Distribution in Training Dataset',
+            color='Count',
+            color_continuous_scale='Viridis',
+            text='Count'
+        )
+        fig.update_traces(textposition='outside')
+        fig.update_layout(height=500)
+        display_plotly(fig)
         
         # Additional statistics
         col1, col2, col3 = st.columns(3)
