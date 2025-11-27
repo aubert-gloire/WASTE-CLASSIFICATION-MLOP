@@ -95,6 +95,17 @@ def get_dataset_statistics():
     """Get real dataset statistics"""
     stats = {'class_counts': {}, 'total_train': 0, 'total_val': 0, 'total_images': 0}
     
+    # Try to load from cached stats file first (for deployment)
+    stats_file = MODEL_DIR / "dataset_stats.json"
+    if stats_file.exists():
+        try:
+            with open(stats_file, 'r') as f:
+                import json
+                return json.load(f)
+        except Exception:
+            pass
+    
+    # Fall back to reading actual dataset
     organized_data_path = DATA_DIR / "organized_data"
     if not organized_data_path.exists():
         return {**stats, 'available': False}
@@ -510,6 +521,14 @@ def trigger_retraining():
             return {"error": "Empty response from API"}
         
         return response.json()
+    except requests.exceptions.HTTPError as e:
+        # Handle 503 (service unavailable - retraining disabled)
+        if e.response.status_code == 503:
+            try:
+                return e.response.json()  # Return the error message from API
+            except:
+                return {"error": "Retraining service unavailable"}
+        return {"error": f"HTTP error: {str(e)}"}
     except requests.exceptions.JSONDecodeError as e:
         return {"error": f"Invalid JSON response: {str(e)}. Response text: {response.text[:200]}"}
     except requests.exceptions.RequestException as e:
@@ -1136,9 +1155,15 @@ def show_retrain_page():
                         result = trigger_retraining()
                     
                     if "error" in result:
-                        st.error(f"Failed to start retraining: {result['error']}")
+                        st.error(f"❌ Failed to start retraining: {result['error']}")
+                    elif "message" in result and "disabled" in result.get("message", "").lower():
+                        # Retraining disabled in production
+                        st.warning("⚠️ **Retraining Disabled on Render Free Tier**")
+                        st.info(result.get("message", "Retraining requires more RAM"))
+                        if "suggestion" in result:
+                            st.info(f"💡 **Solution:** {result['suggestion']}")
                     else:
-                        st.success("Retraining started")
+                        st.success("✅ Retraining started")
                         time.sleep(2)
                         st.rerun()
             else:

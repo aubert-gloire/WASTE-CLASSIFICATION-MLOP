@@ -38,15 +38,16 @@ data/processed/*
 data/uploaded/*
 !data/.gitkeep
 
-# Models - Keep main model, exclude backups and checkpoints
+# Models - Keep main model and visualization data, exclude backups and checkpoints
 models/backup_*
 models/retrained_*
 models/checkpoints/*
-models/training_history.pkl
-models/classification_report.json
-models/class_names.pkl
 !models/.gitkeep
 !models/waste_classifier_mobilenetv2_v1.h5
+!models/training_history.pkl
+!models/classification_report.json
+!models/class_names.pkl
+!models/dataset_stats.json
 
 # Logs
 logs/

@@ -1,0 +1,14 @@
+{
+  "class_counts": {
+    "cardboard": 403,
+    "glass": 501,
+    "metal": 410,
+    "paper": 594,
+    "plastic": 482,
+    "trash": 137
+  },
+  "total_train": 2064,
+  "total_val": 463,
+  "total_images": 2527,
+  "available": true
+}
