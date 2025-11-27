@@ -193,11 +193,31 @@ locust -f locustfile.py --host https://your-api.onrender.com
 
 ---
 
-## Contributors
+## Contacts
 
-Your Name  
-African Leadership University  
-Machine Learning Engineering
+Aubert Gloire Bihibindi  
+email: a.bihibindi1@alustudent.com
+
+
+
+---
+
+## Dataset
+
+**Source:** [Waste Classification Data on Kaggle](https://www.kaggle.com/datasets/techsash/waste-classification-data)
+
+**Statistics:**
+- **Total Images:** 2,527
+- **Classes:** 6 (Cardboard, Glass, Metal, Paper, Plastic, Trash)
+- **Split:** 2,064 training / 463 validation
+
+**Class Distribution:**
+- Cardboard: 403 images
+- Glass: 501 images  
+- Metal: 410 images
+- Paper: 594 images
+- Plastic: 482 images
+- Trash: 137 images
 
 ---
 
@@ -207,12 +227,3 @@ Academic assignment for African Leadership University
 
 ---
 
-## Acknowledgments
-
-- Dataset: Garbage Classification (Kaggle)
-- African Leadership University
-- TensorFlow Team
-
----
-
-Built for a cleaner planet
