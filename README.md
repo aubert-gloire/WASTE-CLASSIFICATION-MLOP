@@ -8,7 +8,7 @@ Automated waste classification system using MobileNetV2 to classify waste into 6
 
 ## Live Demo
 
-- **Video:** [YouTube Demo](YOUR_YOUTUBE_LINK)
+- **Video:** [YouTube Demo](https://youtu.be/xEtSLoTUaPY)
 - **API:** https://waste-classification-api-atei.onrender.com
 - **UI:** https://waste-classification-ui.onrender.com
 - **GitHub:** [Repository](https://github.com/aubert-gloire/WASTE-CLASSIFICATION-MLOP)
@@ -31,12 +31,14 @@ Automated waste classification system using MobileNetV2 to classify waste into 6
 
 ## Features
 
-- Single image prediction with confidence scores
-- 3+ interactive data visualizations
-- Bulk image upload for retraining
-- One-click model retraining (1-2 minutes with fast fine-tuning)
-- Real-time system monitoring
-- Load testing with Locust
+- ✅ Single image prediction with confidence scores
+- ✅ 3+ interactive data visualizations (class distribution, model performance, per-class metrics)
+- ✅ Bulk image upload (up to 50 images)
+- ✅ Model retraining (**local only** - Render free tier has 512MB RAM limit, TensorFlow training requires 2GB+)
+- ✅ Real-time system monitoring (CPU, memory, uptime)
+- ✅ Load testing with Locust (697 requests, 2.34 RPS, 0 failures)
+
+**Note:** Retraining is disabled on Render free tier due to memory constraints. Train locally and push updated model to GitHub for deployment.
 
 ---
 
